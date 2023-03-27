@@ -1,7 +1,9 @@
 package utez.edu.mx.SIGEV.entity;
 
-import javax.persistence.*;
-
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "color")
 public class Color {

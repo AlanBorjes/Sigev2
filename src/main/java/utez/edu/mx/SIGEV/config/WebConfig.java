@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+
     public void addResourceHandlers(ResourceHandlerRegistry handlerRegistry) {
         handlerRegistry.addResourceHandler("/docs/**").addResourceLocations("file:C:/comve/docs/");
     }
