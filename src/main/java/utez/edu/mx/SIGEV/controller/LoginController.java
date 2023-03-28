@@ -6,9 +6,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class LoginController {
-    @GetMapping(value="/Login")
+    @GetMapping(value="/sign")
     public String login() {
-        return  "login";
+        return  "/sign/login";
+    }
+    
+    @GetMapping(value="/index")
+    public String index() {
+        return  "/index";
     }
     
 }

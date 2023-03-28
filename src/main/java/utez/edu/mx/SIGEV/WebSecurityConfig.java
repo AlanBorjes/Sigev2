@@ -27,10 +27,6 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Autowired
-    public void configurerGlobal(AuthenticationManagerBuilder auth) throws Exception{
-        auth.jdbcAuthentication().dataSource(dataSource);
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
@@ -38,7 +34,8 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests(
                 //request autorizados
                 (requests) -> {
-                    requests.requestMatchers("/login").permitAll();
+                    requests.requestMatchers(  "/css/**", "/js/**", "/img/**", "/error/**", "/images/**", "imagenes/**", "/docs/**").permitAll();
+                    requests.requestMatchers("/sign").permitAll();
                     requests.anyRequest().authenticated();
                 }
         );
@@ -46,7 +43,7 @@ public class WebSecurityConfig {
 
         http.formLogin(
                 (login) -> {
-                    login.loginPage("/login").permitAll();
+                    login.loginPage("/index").permitAll();
                 }
         );
 
@@ -55,13 +52,14 @@ public class WebSecurityConfig {
                     logout.permitAll();
                 }
         );
+        http.exceptionHandling().accessDeniedPage("/error_403");
         return http.build();
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails user = User.withDefaultPasswordEncoder()
-                .username("rodo")
+                .username("rodo@gmail.com")
                 .password("12345")
                 .roles("admin")
                 .build();
