@@ -1,7 +1,6 @@
 package utez.edu.mx.SIGEV.entity;
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "annexes")

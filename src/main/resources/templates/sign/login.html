@@ -23,6 +23,8 @@
   height: 100vh;">
                 <div class="col-6 card-Login row">
                     <form th:action="@{/login}" method="post"   >
+                        <div th:insert="~{fragments/alert :: alerts}">
+
                         <img th:src="@{/img/img_1.png}" width="150" height="150" class="img-Backgrund">
                         <div class="form-group">
                             <label for="exampleInputEmail1">Correo :</label>

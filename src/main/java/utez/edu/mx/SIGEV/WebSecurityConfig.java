@@ -4,70 +4,61 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
-import javax.sql.DataSource;
 
+import utez.edu.mx.SIGEV.handler.CustomLoginSuccessHandler;
+import utez.edu.mx.SIGEV.handler.CustomLogoutSuccessHandler;
+import utez.edu.mx.SIGEV.services.JpaUserDetailService;
+
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 @Configuration
-@EnableWebSecurity
-public class WebSecurityConfig {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
+    private final JpaUserDetailService detailService;
+    
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    
+    private final CustomLoginSuccessHandler successHandler;
 
-    @Autowired
-    private DataSource dataSource;
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
+
+    public WebSecurityConfig(JpaUserDetailService detailService, BCryptPasswordEncoder bCryptPasswordEncoder, CustomLoginSuccessHandler successHandler, CustomLogoutSuccessHandler customLogoutSuccessHandler) {
+        this.detailService = detailService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.successHandler = successHandler;
+        this.customLogoutSuccessHandler = customLogoutSuccessHandler;
+    }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        //configura paths publicos
-        http.authorizeHttpRequests(
-                //request autorizados
-                (requests) -> {
-                    requests.requestMatchers(  "/css/**", "/js/**", "/img/**", "/error/**", "/images/**", "imagenes/**", "/docs/**").permitAll();
-                    requests.requestMatchers("/sign").permitAll();
-                    requests.anyRequest().authenticated();
-                }
-        );
-        //configurar pagina de login
-
-        http.formLogin(
-                (login) -> {
-                    login.loginPage("/index").permitAll();
-                }
-        );
-
-        http.logout(
-                (logout) -> {
-                    logout.permitAll();
-                }
-        );
-        http.exceptionHandling().accessDeniedPage("/error_403");
-        return http.build();
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder build) throws Exception {
+        build.userDetailsService(detailService)
+                .passwordEncoder(bCryptPasswordEncoder);
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("rodo@gmail.com")
-                .password("12345")
-                .roles("admin")
-                .build();
-        UserDetails user1 = User.withDefaultPasswordEncoder()
-                .username("fabi")
-                .password("6789")
-                .roles("admin")
-                .build();
-        return new InMemoryUserDetailsManager(user, user1);
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/css/**", "/js/**","/img/**", "/sing")
+                .permitAll()
+                .anyRequest().authenticated()
+                .and()
+                    .formLogin()
+                    .successHandler(successHandler)
+                    .loginPage("/login")
+                    .permitAll()
+                .and()
+                    .logout()
+                    .logoutSuccessHandler(customLogoutSuccessHandler)
+                    .permitAll()
+                .and()
+                    .exceptionHandling().accessDeniedPage("/error_403");
     }
 }
+

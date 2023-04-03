@@ -1,15 +1,14 @@
 package utez.edu.mx.SIGEV.entity;
 
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
-import java.util.Date;
+import java.util.Set;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "role")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,14 +17,17 @@ public class Role {
     @Size(min = 2, message = "El rol debe tener mínimo 2 caracteres")
     @Size(max = 150, message = "El rol debe tener máximo 150 caracteres")
     @NotBlank(message = "El rol no puede estar vacío")
-    private String ROLE_NAME;
+    private String name;
+
+    @ManyToMany(mappedBy = "roles")
+    private Set<UserComite> users;
 
     public Role() {
     }
 
-    public Role(Long id, String ROLE_NAME) {
+    public Role(Long id, String name) {
         this.id = id;
-        this.ROLE_NAME = ROLE_NAME;
+        this.name = name;
     }
 
     public Long getId() {
@@ -36,11 +38,11 @@ public class Role {
         this.id = id;
     }
 
-    public String getROLE_NAME() {
-        return ROLE_NAME;
+    public String getName() {
+        return name;
     }
 
-    public void setROLE_NAME(String ROLE_NAME) {
-        this.ROLE_NAME = ROLE_NAME;
+    public void setName(String name) {
+        this.name = name;
     }
 }
