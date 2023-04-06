@@ -1,4 +1,4 @@
 package utez.edu.mx.SIGEV.controller;
 
-public class ColoniaController {
+public class ColonyController {
 }

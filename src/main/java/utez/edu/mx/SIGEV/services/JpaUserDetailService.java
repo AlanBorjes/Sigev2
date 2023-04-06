@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import utez.edu.mx.SIGEV.entity.Role;
 import utez.edu.mx.SIGEV.entity.UserComite;
-import utez.edu.mx.SIGEV.reposity.UserComiteRepository;
+import utez.edu.mx.SIGEV.repository.UserComiteRepository;
 
 import java.util.ArrayList;
 import java.util.List;

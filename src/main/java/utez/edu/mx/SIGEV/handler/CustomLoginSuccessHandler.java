@@ -8,7 +8,7 @@ import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.support.SessionFlashMapManager;
 import utez.edu.mx.SIGEV.entity.SessionControlAccess;
 import utez.edu.mx.SIGEV.model.responses.InfoToast;
-import utez.edu.mx.SIGEV.reposity.SessionControlAccessRepository;
+import utez.edu.mx.SIGEV.repository.SessionControlAccessRepository;
 
 import java.io.IOException;
 import java.util.Date;
